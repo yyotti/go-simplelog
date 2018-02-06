@@ -14,7 +14,7 @@ type Logger struct {
 	errorLogger *log.Logger
 }
 
-const (
+var (
 	debugPrefix = "[debug] "
 	infoPrefix  = "[info]  "
 	errorPrefix = "[error] "
@@ -122,4 +122,27 @@ func writeln(logger *log.Logger, v ...interface{}) {
 	}
 
 	logger.Println(v...)
+}
+
+// SetDebugPrefix calls log.SetPrefix().
+func SetDebugPrefix(prefix string) {
+	setPrefix(l.debugLogger, prefix)
+}
+
+// SetInfoPrefix calls log.SetPrefix().
+func SetInfoPrefix(prefix string) {
+	setPrefix(l.infoLogger, prefix)
+}
+
+// SetErrorPrefix calls log.SetPrefix().
+func SetErrorPrefix(prefix string) {
+	setPrefix(l.errorLogger, prefix)
+}
+
+func setPrefix(logger *log.Logger, prefix string) {
+	if logger == nil {
+		return
+	}
+
+	logger.SetPrefix(prefix)
 }

@@ -339,4 +339,50 @@ func TestWriteln(t *testing.T) {
 	}
 }
 
+func TestSetPrefix(t *testing.T) {
+	tests := []struct {
+		logger   *log.Logger
+		prefix   string
+		expected string
+	}{
+		// TEST0 {{{
+		{
+			logger:   nil,
+			prefix:   "nologger",
+			expected: "",
+		},
+		// }}}
+		// TEST1 {{{
+		{
+			logger:   log.New(os.Stdout, "before", 0),
+			prefix:   "[after] ",
+			expected: "[after] test",
+		},
+		// }}}
+	}
+
+	var buf bytes.Buffer
+	for i, tt := range tests {
+		buf.Reset()
+
+		setPrefix(tt.logger, tt.prefix)
+		if tt.logger == nil {
+			// Expect no error
+			continue
+		}
+
+		tt.logger.SetOutput(&buf)
+
+		tt.logger.Println("test")
+
+		expected := tt.expected + "\n"
+		actual := buf.String()
+
+		if actual != expected {
+			t.Errorf("%d: Expected [%s] for STDOUT, but got [%s]", i, expected, actual)
+		}
+
+	}
+}
+
 // FIXME Add tests
